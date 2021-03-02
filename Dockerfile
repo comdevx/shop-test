@@ -1,0 +1,12 @@
+FROM node:11-alpine
+
+RUN mkdir -p /usr/src/app
+
+WORKDIR /usr/src/app
+
+COPY ./api .
+COPY /.env .
+
+RUN npm i
+
+CMD ["npm", "start"]

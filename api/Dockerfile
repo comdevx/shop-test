@@ -1,0 +1,18 @@
+FROM node:11-alpine
+
+RUN mkdir -p /usr/src/app
+
+WORKDIR /usr/src/app
+
+COPY ./src .
+
+ENV PORT=$PORT
+ENV MYSQL_IP=$MYSQL_IP
+ENV MYSQL_PORT=$MYSQL_PORT
+ENV MYSQL_USER=$MYSQL_USER
+ENV MYSQL_PASS=$MYSQL_PASS
+ENV MYSQL_DB=$MYSQL_DB
+
+RUN npm i
+
+CMD ["npm", "start"]

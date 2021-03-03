@@ -1,30 +1,38 @@
 version: "3.1"
 services:
   api:
-    build: .
+    build: ./api
     command: npm start
+    links:
+      - db
     volumes:
       - .:/usr/app/
       - /usr/app/node_modules
+    environment:
+      PORT: ${PORT}
+      MYSQL_IP: ${MYSQL_IP}
+      MYSQL_PORT: ${MYSQL_PORT}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASS: ${MYSQL_PASS}
+      MYSQL_DB: ${MYSQL_DB}
+      TZ: Asia/Bangkok
     restart: always
     ports:
       - ${PORT}:3000
     depends_on:
       - db
   db:
-    image: mysql:5.7
-    container_name: db
+    build: ./database
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - ${MYSQL_PORT}:3306
     environment:
-      MYSQL_ROOT_PASSWORD: ${PASSWORD}
-      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASS}
+      MYSQL_DATABASE: ${MYSQL_DB}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASS}
       TZ: Asia/Bangkok
-    restart: always
-    ports:
-      - 6033:3306
-    volumes:
-      - dbdata:/var/lib/mysql
   phpmyadmin:
     image: phpmyadmin
     container_name: pma
@@ -37,6 +45,3 @@ services:
     restart: always
     ports:
       - ${PMA_PORT}:80
-volumes:
-  dbdata:
-    driver: local
